@@ -4,9 +4,9 @@ import (
 	"errors"
 	"math"
 	"github.com/spaolacci/murmur3"
-	"fmt"
 	"encoding/binary"
 	"reflect"
+	"log"
 )
 
 /**
@@ -34,21 +34,30 @@ func NewBella(items int, probability float64) (bella, error) {
 
 func (b bella) Add(item int) {
 	if marvin, err := marvin32(item, b.items); err != nil {
-		fmt.Println(err)
+		log.Fatalln(err)
 	} else {
 		murmur := murmurHash(item, b.items)
+		fastHash, err := sfh(item, b.items)
+		if err != nil {
+			log.Fatalln(err)
+		}
 		b.bitArray[murmur] = 1
 		b.bitArray[marvin] = 1
+		b.bitArray[fastHash] = 1
 	}
 }
 
-func (b bella) Test(item int) (bool)  {
+func (b bella) Test(item int) (bool) {
 	if marvin, err := marvin32(item, b.items); err != nil {
-		fmt.Println(err)
+		log.Fatalln(err)
 		return false
 	} else {
 		murmur := murmurHash(item, b.items)
-		if b.bitArray[murmur] == 1 && b.bitArray[marvin] == 1 {
+		fastHash, err := sfh(item, b.items)
+		if err != nil {
+			log.Fatalln(err)
+		}
+		if b.bitArray[murmur] == 1 && b.bitArray[marvin] == 1 && b.bitArray[fastHash] == 1 {
 			return true
 		} else {
 			return false
@@ -69,6 +78,18 @@ func marvin32(item, n int) (uint16, error) {
 		return 0, err
 	} else {
 		hash := marvin.Sum32()
+		b := make([]byte, 4)
+		binary.LittleEndian.PutUint32(b, hash)
+		return binary.LittleEndian.Uint16(b) % uint16(n), err
+	}
+}
+
+func sfh(item, n int) (uint16, error) {
+	fastHash := NewSuperFastHash()
+	if _, err := fastHash.Write(getBytes(item)); err != nil {
+		return 0, err
+	} else {
+		hash := fastHash.Sum32()
 		b := make([]byte, 4)
 		binary.LittleEndian.PutUint32(b, hash)
 		return binary.LittleEndian.Uint16(b) % uint16(n), err
