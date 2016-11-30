@@ -12,4 +12,8 @@
 ### blooming-bella
 
  > A bloom filter for integers.
- > Uses __mummur3__ and __marvin32__ hashing algorithms
+ > Uses __mummur3__,__Super Fast Hash__ and __marvin32__ hashing algorithms
+ 
+### New 
+
+Added __Super Fast Hashing__ algorithm
