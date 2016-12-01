@@ -17,3 +17,7 @@
 ### New 
 
 Added __Super Fast Hashing__ algorithm
+
+### TODO
+ - [ ]  Calculate "ideal" number of hash functions to use.
+ - [ ]  Dynamically "generate" the hash functions. *_What does it mean to be alive?_*
