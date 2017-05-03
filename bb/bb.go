@@ -25,7 +25,7 @@ type bella struct {
 
 func NewBella(items int, probability float64) (bella, error) {
 	if probability < 0.0 && probability > 1.0 {
-		return bella{}, errors.New("Desired probabilty cannot be < 0.0 and > 1.0")
+		return bella{}, errors.New("Desired probability cannot be < 0.0 and > 1.0")
 	} else {
 		b := int(math.Floor(-((float64(items) * math.Log(probability))) / (math.Pow(math.Log(2), 2))))
 		return bella{probability: probability, items: items, bitArrayLength: b, bitArray: make([]int8, b)}, nil
